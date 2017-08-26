@@ -1,0 +1,85 @@
+/* Color 2 Template */
+
+a:hover,
+.navbar-default .navbar-nav>li:hover>a,
+.navbar-default .navbar-nav>li.active>a,
+.navbar-default .navbar-nav>li.active:hover>a,
+.navbar-default .navbar-nav>li:hover>a:before,
+.navbar-default .navbar-nav>li.active>a:before,
+.menu-title>a,
+.menu-post-title a,
+.block-minicart:hover>a,
+.cart-info .product-name a:hover,
+.cart-info .product-attributes a:hover,
+.remove-link a:hover,
+.support-phone-icon,
+.price,
+.copyright a:hover,
+.owl-prev,
+.owl-next,
+.sidebar-menu li:hover>a,
+.view-mode.active,
+.paginations a:hover,
+.paginations a.current,
+.product-more:hover,
+.stock-value,
+.product-info-tabs .nav-tabs>li.active>a,
+.product-info-tabs .nav-tabs>li.active>a:focus,
+.product-info-tabs .nav-tabs>li.active>a:hover,
+.product-info-tabs .nav>li>a:focus,
+.product-info-tabs .nav>li>a:hover {
+    color: #e84c3d;
+}
+
+.btn,
+.btn:focus,
+.btn:visited,
+.top-select li.selected a,
+.top-select li:hover a,
+.navbar-default .navbar-nav>li:hover>a:before,
+.navbar-default .navbar-nav>li.active>a:before,
+.menu-items li a:before,
+.block-minicart:hover>a .cart-sub:after,
+.account-icon,
+.owl-prev:hover,
+.owl-next:hover,
+.sale,
+.button-container,
+.shop-btn:hover,
+.shop-cart-btn,
+.shop-cart-btn:hover,
+.section_count,
+.deal-counter .btn:hover,
+.mini-cat:hover,
+.style-3 .header-search select,
+.style-3 .header-search [type=search],
+.style-3 .support-phone,
+.widget-title:after,
+.sidebar-widget .widget-title,
+.blog-pagination a{
+    background-color: #e84c3d;
+}
+
+.owl-carousel .owl-controls .owl-dot.active,
+.deal-counter .btn:hover,
+.owl-prev:hover,
+.owl-next:hover,
+.module-title,
+.module-title:before,
+.module-title:after,
+.owl-prev,
+.owl-next {
+    border-color: #e84c3d;
+}
+
+.btn:hover {
+    background-color: #c34135;
+}
+
+.btn-border {
+    background-color: transparent;
+}
+
+.copyright a:hover {
+    color: #e84c3d !important;
+}
