@@ -54,3 +54,7 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['home'] = 'home/index';
+$route['register'] = 'home/register';
+$route['login'] = 'home/login';
+$route['logout'] = 'home/logout';
+$route['products'] = 'home/products';

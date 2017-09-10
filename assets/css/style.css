@@ -162,6 +162,7 @@ ul{
 }
 .account-menu li{
     float: left;
+    cursor: pointer;
 }
 .account-menu li + li:before{
     content: "|";
@@ -257,7 +258,7 @@ ul{
 }
 .navbar-brand {
     height: 120px;
-    padding: 42px 15px;
+    padding: 15px 15px;
 }
 .navbar-nav{
     z-index: 990;
@@ -2914,4 +2915,16 @@ footer {
 }
 .view-all{
     float: right;
+}
+.registerFormMain {
+    text-align: center !important;
+}
+.error{
+    color: #f44242 !important;
+}
+.help-block{
+    color: #f44242 !important;
+}
+.resetlink{
+    cursor: pointer;
 }

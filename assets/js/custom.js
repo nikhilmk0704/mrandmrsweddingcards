@@ -273,6 +273,7 @@ $(document).ready(function () {
     
     $('.ui-ranger').each(function () {
         var slideDiv = $(this);
+        var rupee = String.fromCharCode('8377');
         $(this).slider({
             range: true,
             min: slideDiv.data('min'),
@@ -280,10 +281,10 @@ $(document).ready(function () {
             step: 0.01,
             values: [slideDiv.data('min'), slideDiv.data('max')],
             slide: function (event, ui) {
-                $(this).siblings('input').val('$' + ui.values[0] + ' - $' + ui.values[1]);
+                $(this).siblings('input').val(rupee + ui.values[0] + ' - '+ rupee + ui.values[1]);
             }
         });
-        $(this).siblings('input').val("$" + $(this).slider("values", 0) + ".00 - $" + $(this).slider("values", 1) + ".00");
+        $(this).siblings('input').val(rupee + $(this).slider("values", 0) + ".00 - "+ rupee + $(this).slider("values", 1) + ".00");
     });
     
     /*---------------------------------------------------------

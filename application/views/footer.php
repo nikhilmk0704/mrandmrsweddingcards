@@ -113,10 +113,179 @@
     <!-- Footer End -->
     
     <!-- JS Plugins -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/owl.carousel.js"></script>
-    <script src="assets/js/jquery.countdown.js"></script>
-    <script src="assets/js/custom.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/jquery.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/bootstrap.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/owl.carousel.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/jquery.countdown.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/custom.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/jquery.validate.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/bootbox.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/jquery.toast.js"></script>
+    <script type="text/javascript">
+        $( "#signupForm" ).validate( {
+                rules: {
+                    firstName: "required",
+                    lastName: "required",
+                    password: {
+                        required: true,
+                    },
+                    confirmPassword: {
+                        required: true,
+                        equalTo: "#password"
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    phone: {
+                        required: true,
+                        number: true,
+                        minlength:10
+                    }
+                },
+                messages: {
+                    firstName: "Please enter your firstname",
+                    lastName: "Please enter your lastname",
+                    password: {
+                        required: "Please provide a password",
+                    },
+                    confirmPassword: {
+                        required: "Please provide a password",
+                        equalTo: "Please enter the same password as above"
+                    },
+                    email: "Please enter a valid email address",
+                    phone: "Please enter a valid phone number"
+                },
+                errorElement: "em",
+                errorPlacement: function ( error, element ) {
+                    // Add the `help-block` class to the error element
+                    error.addClass( "help-block" );
+
+                    error.insertAfter( element );
+                    
+                },
+                highlight: function ( element, errorClass, validClass ) {
+                    $( element ).parents( ".col-sm-5" ).addClass( "has-error" ).removeClass( "has-success" );
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $( element ).parents( ".col-sm-5" ).addClass( "has-success" ).removeClass( "has-error" );
+                }
+            } );
+
+        function register(){
+            if ($( "#signupForm" ).valid()) {
+                $.ajax({
+                url: "<?php echo site_url('register');?>",
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    firstName: $('#firstName').val(),
+                    lastName: $('#lastName').val(),
+                    password: $('#password').val(),
+                    email: $('#email').val(),
+                    phone: $('#phone').val()
+                },
+                success: function (data) {
+                    if(data=='1'||data==1){
+                        location.reload();
+                    }else if(data=='0'||data==0){
+                        $.toast({
+                            heading: 'Error',
+                            text: 'User registration failed!',
+                            position: 'top-right',
+                            stack: false
+                        })
+
+                    }else if(data=='2'||data==2){
+                        $.toast({
+                            heading: 'Error',
+                            text: 'User registration failed! Email address already Exists.',
+                            position: 'top-right',
+                            stack: false
+                        })
+
+                    }
+                }
+                });
+            }
+        }
+
+        function toggleLoginPop(){
+           $('#loginModal').modal('toggle');
+           $('#registerModal').modal('toggle'); 
+        }
+
+        $( "#signinForm" ).validate( {
+                rules: {
+                    password_login: {
+                        required: true,
+                    },
+                    email_login: {
+                        required: true,
+                        email: true
+                    }
+                },
+                messages: {
+                    password_login: {
+                        required: "Please provide a password",
+                    },
+                    email_login: "Please enter a valid email address",
+                },
+                errorElement: "em",
+                errorPlacement: function ( error, element ) {
+                    // Add the `help-block` class to the error element
+                    error.addClass( "help-block" );
+
+                    error.insertAfter( element );
+                    
+                },
+                highlight: function ( element, errorClass, validClass ) {
+                    $( element ).parents( ".col-sm-5" ).addClass( "has-error" ).removeClass( "has-success" );
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $( element ).parents( ".col-sm-5" ).addClass( "has-success" ).removeClass( "has-error" );
+                }
+            } );
+
+        function login(){
+            if ($( "#signinForm" ).valid()) {
+                $.ajax({
+                url: "<?php echo site_url('login');?>",
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    password_login: $('#password_login').val(),
+                    email_login: $('#email_login').val()                },
+                success: function (data) {
+                   if(data=='1'||data==1){
+                        location.reload();
+                    }else if(data=='0'||data==0){
+                        $.toast({
+                            heading: 'Error',
+                            text: 'Email and Password not matching',
+                            position: 'top-right',
+                            stack: false
+                        })
+
+                    }
+                }
+                });
+            }
+
+        }
+
+        function addToCart(productId,quantity){
+            var loginStatus =  '<?php echo $this->session->userdata("userloggedin")?>';
+            if(loginStatus=='1'){
+                $('#addToCart').modal('toggle');
+                //alert(<?php echo $this->session->userdata("id")?>);
+            }else{
+                $('#loginModal').modal('toggle');
+            }
+
+        }
+
+    </script>
 </body>
 </html>

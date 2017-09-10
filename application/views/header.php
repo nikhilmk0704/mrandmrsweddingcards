@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<?php echo base_url(); ?>
-<!-- Mirrored from codechant.com/envato/html/monaco/home-1.html by HTTrack Website Copier/3.x [XR&CO'2013], Wed, 31 May 2017 10:25:21 GMT -->
+
 <head>
     <!-- Metas -->
     <meta charset="UTF-8">
@@ -18,6 +17,8 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/responsive.css">
+
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/jquery.toast.css">
     
     <!-- Google font -->
     <link href="https://fonts.googleapis.com/css6079.css?family=Poppins:300,400,500,600,700" rel="stylesheet">
@@ -31,13 +32,13 @@
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="assets/js/html5shiv.min.js"></script>
-      <script src="assets/js/respond.min.js"></script>
+      <script src="<?php echo base_url(); ?>assets/js/html5shiv.min.js"></script>
+      <script src="<?php echo base_url(); ?>assets/js/respond.min.js"></script>
     <![endif]-->
 </head>
 
 <body>
-    
+  
     <!-- Top Header Start -->
     <header id="top-header" class="top-header">
         <div class="container">
@@ -46,9 +47,8 @@
                     <div class="top-block account-menu-block mobile-selector">
                         <div class="mobile-selected">Login</div>
                         <ul id="account-menu" class="menu account-menu mobile-select">
-                            <li><a href="#">Login</a></li>
-                            <li><a href="#">Register</a></li>
-                            <li><a href="#">Tracking</a></li>
+                            <li><a id="loginIcon" data-toggle="modal" data-target="#loginModal">Login</a></li>
+                            <li><a id="registerIcon" data-toggle="modal" data-target="#registerModal">Register</a></li>
                         </ul>
                     </div>
                 </div>
@@ -57,11 +57,104 @@
                         <p class="welcome-message">Welcome Mr & Mrs Wedding Cards!</p>
                     </div>
                 </div>
+                <?php if($this->session->userdata("userloggedin")){ ?>
+                <div class="col-md-4 col-sm-3">
+                    <div class="top-block localize-block">
+                        <div class="currency-selector top-selector">
+                            <div class="currency-selected top-selected"><span><?php echo ucfirst($this->session->userdata('firstName') . " " . $this->session->userdata('lastName')); ?></span><i class="fa fa-angle-down"></i></div>
+                            <ul id="currency-select" class="top-select currency-select">
+                                <li><a href="#">Wishlist</a></li>
+                                <li><a href="#">Orders</a></li>
+                                <li><a href="<?php echo base_url('logout'); ?>">Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <?php } ?>
             </div>
         </div>
     </header>
     <!-- Top Header End -->
     
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Login</h4>
+          </div>
+          <div class="modal-body">
+            <form id="signinForm" class="basicfields account-form" action="#" method="post">
+                <input type="email" name="email_login" id="email_login" placeholder="Email address">
+                <input type="password" name="password_login" id="password_login" placeholder="Password">
+                <a onclick="toggleLoginPop()" class="resetlink">Register</a><br><br>
+                <button type="button" onclick="login();" class="btn"><i class="fa fa-lock" aria-hidden="true"></i> Sign in</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- Login Modal -->
+    
+
+    <!-- Regitser Modal -->
+    <div id="registerModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Register</h4>
+          </div>
+          <div class="modal-body">
+            <form id="signupForm" class="basicfields account-form" action="#" method="post">
+                <div class="row">
+                    <div class="col-md-12 registerFormMain">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" name="firstName" id="firstName" placeholder="First Name">
+                            </div>
+                            <div class="form-group">
+                                <input type="email" name="email" id="email" placeholder="Email">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" name="password" id="password" placeholder="Password">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" name="lastName" id="lastName" placeholder="Last Name">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="phone" id="phone" placeholder="Phone Number">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password">
+                            </div>
+                        </div>
+                            <button type="button" onclick="register()" class="btn"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> REGISTER</button>
+                    </div>
+                    
+                </div>
+                
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- Regitser Modal -->
     <!-- Main header start -->
     <header id="main-header" class="main-header">
         <nav class="navbar navbar-default">
@@ -75,13 +168,12 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="index.html"><img src="images/template/color-1/logo.png" alt="Site Logo"></a>
+                    <a class="navbar-brand" href="<?php echo base_url('home'); ?>"><img src="images/template/color-1/logo.png" alt="Site Logo" height="100"></a>
                 </div>
-
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="main-navigation">
-                    <ul class="nav navbar-nav navbar-center">
-                        <li class="active">
+                    <ul class="nav navbar-nav navbar-center">   
+                        <li <?php if($this->uri->segment(1)=='home'){ ?> class="active" <?php } ?>>
                             <a href="<?php echo base_url('home'); ?>">Home</a>
                         </li>
                         <li>

@@ -83,7 +83,7 @@
                 <div class="row">
                     <div class="col-md-12 text-center">
                         <h3 class="module-title">Products</h3>
-                        <a class="btn view-all" href="product.html">View All</a>
+                        <a class="btn view-all" href="<?php echo base_url('products'); ?>">View All</a>
                     </div>
 
                 </div>
@@ -116,12 +116,17 @@
                                             <h5 class="product-name">
                                                 <a href="product-single.html"><?php echo $product['name']; ?></a>
                                             </h5>
-                                            <?php
-                                                $price =  $product['price'];
-                                                $discount = $product['discountPercentage'];
-                                                $discountAmount = $price * ($discount/100);
-                                            ?>
-                                            <p class="price">&#8377; <?php echo $product['price'] - $discountAmount; ?> <span class="regular-price">&#8377; <?php echo $product['price']; ?></span></p>
+                                            <?php if($product['discountPercentage'] > 0){ ?>
+                                                <?php
+                                                    $price =  $product['price'];
+                                                    $discount = $product['discountPercentage'];
+                                                    $discountAmount = $price * ($discount/100);
+                                                ?>
+                                             <p class="price">&#8377; <?php echo $product['price'] - $discountAmount; ?> <span class="regular-price">&#8377; <?php echo $product['price']; ?></span></p>
+                                               
+                                            <?php }else{ ?>
+                                               <p class="price"> &#8377; <?php echo $product['price']; ?></p> 
+                                            <?php } ?>                                            
                                             
                                                 <div class="star-ratings">
                                                     <?php
@@ -152,7 +157,7 @@
  
                                             <div class="button-container">
                                                 <div class="tab_button">
-                                                    <a class="shop-btn shop-cart-btn" href="#"><i class="fa fa-shopping-bag"></i>Add to cart</a>
+                                                    <a class="shop-btn shop-cart-btn" onclick="addToCart(<?php echo $product['id']; ?>,<?php echo $product['quantity'];?>); "><i class="fa fa-shopping-bag"></i>Add to cart</a>
                                                     <a title="Add to Wishlist" class="shop-btn shop-wishlist-btn" href="#"><i class="fa fa-heart"></i></a>
                                                     <a class="shop-btn shop-compare-btn" href="#"><i class="fa fa-retweet"></i></a>
                                                     <a class="shop-btn shop-view-btn" href="#"><i class="fa fa-eye"></i></a>
@@ -307,6 +312,31 @@
             </div>
         </div>
         <!-- Testimonial Module Start -->        
+    </div>
+
+    <div id="addToCart" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Add to Cart</h4>
+          </div>
+          <div class="modal-body">
+            <form id="signinForm" class="basicfields account-form" action="#" method="post">
+                <input type="email" name="email_login" id="email_login" placeholder="Email address">
+                <input type="password" name="password_login" id="password_login" placeholder="Password">
+                <a onclick="toggleLoginPop()" class="resetlink">Register</a><br><br>
+                <button type="button" onclick="login();" class="btn"><i class="fa fa-lock" aria-hidden="true"></i> Sign in</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
     </div>
     <!-- Main Wrap End -->
     <?php $this->load->view('footer'); ?>

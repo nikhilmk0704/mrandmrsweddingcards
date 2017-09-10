@@ -8,7 +8,7 @@ class Category_model extends CI_Model {
             date_default_timezone_set('Asia/Kolkata');
       
 	   }
-    //school template list
+    
     public function categoryList(){
     	$sql = "SELECT `id`, `categoryName`, `createdAt`, `updatedAt`, `enabled` FROM `productcategory` WHERE 1";
     	$query = $this->db->query($sql);
