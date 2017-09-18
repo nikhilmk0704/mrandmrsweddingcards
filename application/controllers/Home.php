@@ -60,6 +60,71 @@ class Home extends CI_Controller {
 		$data['productCategory'] = $this->home_model->categoryList();
 		$data['products'] = $this->home_model->productListViewAll();
 		$data['inStockCount'] = $this->home_model->inStockCount();
+		$data['minMax'] = $this->home_model->minMaxPrice();
 		$this->load->view('products',$data);
 	}
+
+	public function filterProduct(){
+		$shape = '';
+		$color = '';
+        $category = '';
+        $stock = '';
+   		if(isset($_POST['shape'])){
+			if(count($_POST['shape']) > 0){
+				 $shape = implode(', ', $_POST['shape']);
+			}
+
+		}
+
+		if(isset($_POST['color'])){
+			if(count($_POST['color']) > 0){
+				 $color = implode(', ', $_POST['color']);
+			}
+
+		}
+		if(isset($_POST['category'])){
+			if(count($_POST['category']) > 0){
+				 $category = implode(', ', $_POST['category']);
+			}
+
+		}
+		if(isset($_POST['stock'])){
+			if(count($_POST['stock']) > 0){
+				$stock = 1;
+			}
+		}
+
+		$data['products'] = $this->home_model->productListViewAll($shape,$color,$category,$stock,$_POST['min'],$_POST['max']);
+		$this->load->view('product_list',$data);
+	}
+
+
+	
+	public function productDetail(){
+		$productID = $this->uri->segment(2);
+		$data['product'] = $this->home_model->productListSingle($productID);
+		$this->load->view('product_single',$data);
+	}
+
+	public function saveReview(){
+		$response = $this->home_model->saveReview($_POST);
+		echo $response;
+	}
+
+	public function wishListSave(){
+		$response = $this->home_model->wishListSave($_POST);
+		echo $response;
+	}
+
+	public function wishList(){
+		$userId = $this->session->userdata("id");
+		$data['wishlist'] = $this->home_model->wishList($userId);
+		$this->load->view('wishList',$data);
+	}
+
+	public function wishListDelete(){
+		$response = $this->home_model->wishListDelete($_POST);
+		echo $response;
+	}
+	
 }

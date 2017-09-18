@@ -22,7 +22,7 @@ class Home_model extends CI_Model {
                 $imagesArray = $queryImage->result_array();
 
                 /*Get images for products*/
-                $sqlRating = "SELECT `id`, `productId`, `userId`, `rating`, `createdAt`, `updatedAt` FROM `productrating` WHERE 1 AND `productId` = '".$rowRes->id."'";
+                $sqlRating = "SELECT `id`, `productId`, `userId`, `rating`, `createdAt`, `updatedAt` FROM `productreview` WHERE 1 AND `productId` = '".$rowRes->id."'";
                 $queryRating = $this->db->query($sqlRating);
                 $ratingArray = $queryRating->result_array();
                 
@@ -127,8 +127,24 @@ class Home_model extends CI_Model {
         }
     }
 
-     public function productListViewAll(){
+     public function productListViewAll($shape='',$color='',$category='',$stock='',$min='',$max=''){
         $sql = "SELECT `product`.`id`, `product`.`name`, `product`.`price`, `product`.`discountPercentage`, `product`.`status`, `product`.`productShapeId`, `product`.`productColorId`, `product`.`productType`, `product`.`quantity`, `product`.`description`, `product`.`vendorId`, `product`.`productCategoryId`, `product`.`weight`, `product`.`size`, `product`.`createdAt`, `product`.`updatedAt`, `product`.`enabled`, `product`.`productId`,`productcategory`.`categoryName`,`productcolor`.`colorName`,`productshape`.`shapeName`,`vendor`.`name` AS `vendorName` FROM `product` LEFT JOIN `productcategory` ON `productcategory`.`id` = `product`. `productCategoryId` LEFT JOIN `productcolor` ON `productcolor`.`id` = `product`. `productColorId` LEFT JOIN `productshape` ON `productshape`.`id` = `product`. `productShapeId` LEFT JOIN `vendor` ON `vendor`.`id` = `product`.`vendorId` WHERE 1";
+        
+        if($shape != ''){
+            $sql.= " AND `product`.`productShapeId` IN (".$shape.")";
+        }
+        if($color != ''){
+            $sql.= " AND `product`.`productColorId` IN (".$color.")";
+        }
+        if($category != ''){
+            $sql.= " AND `product`.`productCategoryId` IN (".$category.")";
+        }
+        if($stock != ''){
+            $sql.= " AND `product`.`status` != '0'";
+        }
+        if($min != '' && $max != ''){ 
+            $sql.= " AND `product`.`price` BETWEEN '".$min."' AND '".$max."'";
+        }
         
         $query = $this->db->query($sql);
         
@@ -141,7 +157,7 @@ class Home_model extends CI_Model {
                 $imagesArray = $queryImage->result_array();
 
                 /*Get images for products*/
-                $sqlRating = "SELECT `id`, `productId`, `userId`, `rating`, `createdAt`, `updatedAt` FROM `productrating` WHERE 1 AND `productId` = '".$rowRes->id."'";
+                $sqlRating = "SELECT `id`, `productId`, `userId`, `rating`, `createdAt`, `updatedAt` FROM `productreview` WHERE 1 AND `productId` = '".$rowRes->id."'";
                 $queryRating = $this->db->query($sqlRating);
                 $ratingArray = $queryRating->result_array();
                 
@@ -253,11 +269,156 @@ class Home_model extends CI_Model {
 
     public function inStockCount(){
        
-        $sqlCount = "SELECT count(`id`) as `count` FROM `product` WHERE 1 AND `status` != '0'";
-        $queryCount = $this->db->query($sqlCount);
-        $count = $queryCount->row_array();
-        return $count['count'];     
+        $sqlStock = "SELECT count(`id`) as `count` FROM `product` WHERE 1 AND `status` != '0'";
+        $queryStock = $this->db->query($sqlStock);
+        $stock = $queryStock->row_array();
+        return $stock['count'];     
     }
-	
-	
+	public function minMaxPrice(){
+       
+        $sqlMinMax = "SELECT min(`price`) as `minimum`,max(`price`) as `maximum` FROM `product` WHERE 1";
+        $queryMinMax = $this->db->query($sqlMinMax);
+        $price = $queryMinMax->row_array();
+        return $price;     
+    }
+
+    public function productListSingle($productID){
+        $userId = $this->session->userdata("id");
+
+        $sql = "SELECT `product`.`id`, `product`.`name`, `product`.`price`, `product`.`discountPercentage`, `product`.`status`, `product`.`productShapeId`, `product`.`productColorId`, `product`.`productType`, `product`.`quantity`, `product`.`description`, `product`.`vendorId`, `product`.`productCategoryId`, `product`.`weight`, `product`.`size`, `product`.`createdAt`, `product`.`updatedAt`, `product`.`enabled`, `product`.`productId`,`product`.`moreInfo`,`productcategory`.`categoryName`,`productcolor`.`colorName`,`productshape`.`shapeName`,`vendor`.`name` AS `vendorName` FROM `product` LEFT JOIN `productcategory` ON `productcategory`.`id` = `product`. `productCategoryId` LEFT JOIN `productcolor` ON `productcolor`.`id` = `product`. `productColorId` LEFT JOIN `productshape` ON `productshape`.`id` = `product`. `productShapeId` LEFT JOIN `vendor` ON `vendor`.`id` = `product`.`vendorId` WHERE 1 AND `product`.`id` ='".$productID."'";
+        
+        $query = $this->db->query($sql);
+        
+        if ($query->num_rows() > 0) {
+            
+            $rowRes = $query->row();     
+            
+            /*Get images for products*/
+            $sqlImage = "SELECT * FROM `productimage` WHERE 1 AND `productId` = '".$rowRes->id."'";
+            $queryImage = $this->db->query($sqlImage);
+            $imagesArray = $queryImage->result_array();
+
+            /*Get rating for products*/
+            $sqlRating = "SELECT `id`, `productId`, `userId`, `rating`, `createdAt`, `updatedAt` FROM `productreview` WHERE 1 AND `productId` = '".$rowRes->id."'";
+            $queryRating = $this->db->query($sqlRating);
+            $ratingArray = $queryRating->result_array();
+
+            /*Get review for products*/
+            $sqlReview = "SELECT `productreview`.`id`, `productreview`.`productId`, `productreview`.`userId`, `productreview`.`reviewTitle`, `productreview`.`review`,`productreview`.`rating`, `productreview`.`createdAt`, `productreview`.`updatedAt`,`user`.`firstName`, `user`.`lastName` FROM `productreview` LEFT JOIN `user` ON `productreview`.`userId` = `user`.`id` WHERE 1 AND `productId` = '".$rowRes->id."'";
+            $queryReview = $this->db->query($sqlReview);
+            $revieArray = $queryReview->result_array();
+
+            /*Get wish list*/
+            
+            $sqlWishList = "SELECT `id`, `productId`, `userId`, `createdAt`, `updatedAt` FROM `wishlist` WHERE 1 AND `productId` = '".$rowRes->id."' AND `userId`='".$userId."'";
+            
+            $queryWish = $this->db->query($sqlWishList);
+            $reviewWish = $queryWish->result_array();
+            
+            $products=array("id" => $rowRes->id,
+                "name" => $rowRes->name,
+                "price" => $rowRes->price, 
+                "discountPercentage" => $rowRes->discountPercentage, 
+                "status" => $rowRes->status, 
+                "productShapeId" => $rowRes->productShapeId,
+                "productColorId" => $rowRes->productColorId,
+                "productType" => $rowRes->productType,
+                "quantity" => $rowRes->quantity,
+                "description" => $rowRes->description,
+                "vendorId" => $rowRes->vendorId,
+                "productCategoryId" => $rowRes->productCategoryId,
+                "weight" => $rowRes->weight,
+                "size"=>$rowRes->size,
+                "createdAt"=>$rowRes->createdAt,
+                "updatedAt"=>$rowRes->updatedAt,
+                "enabled"=>$rowRes->enabled,
+                "productId"=>$rowRes->productId,
+                "vendorName" => $rowRes->vendorName,
+                "categoryName"=>$rowRes->categoryName,
+                "colorName"=>$rowRes->colorName,
+                "shapeName"=>$rowRes->shapeName,
+                "imagesArray" => $imagesArray,
+                "ratingArray" => $ratingArray,
+                "reviewArray"=>$revieArray,
+                "wishlist" => $reviewWish,
+                "moreInfo"=>$rowRes->moreInfo 
+                );   
+            return $products;
+    
+        } else {
+            return 0;
+        }
+    }
+
+    
+    public function saveReview($reviewData){
+        $sql = "SELECT  `id` FROM `productreview` WHERE 1 AND `productId`='".$reviewData['productId']."' 
+                AND `userId`='".$reviewData['userId']."'";
+        
+        $query = $this->db->query($sql);
+        
+        if($query->num_rows() == 0){
+            $data = array(
+                'productId' => $reviewData['productId'],
+                'userId' =>$reviewData['userId'],
+                'reviewTitle'=>$reviewData['title'],
+                'review'=>$reviewData['review'],
+                'rating'=>$reviewData['rating']
+            );
+            $this->db->insert('productreview', $data);
+            $idReview = $this->db->insert_id();
+            return 1;
+        }else{
+            return 0;
+        }      
+    }
+
+    public function wishListSave($wishListData){
+        
+        $sql = "SELECT `id` FROM `wishlist` WHERE 1 AND `productId`='".$wishListData['productId']."' 
+                AND `userId`='".$wishListData['userId']."'";
+        
+        $query = $this->db->query($sql);
+        
+        if($query->num_rows() == 0){
+            $data = array(
+                'productId' => $wishListData['productId'],
+                'userId' =>$wishListData['userId']
+            );
+            $this->db->insert('wishlist', $data);
+            $idReview = $this->db->insert_id();
+            return 1;
+        }else{
+            return 0;
+        }
+
+    }
+
+    public function wishList($userId){
+        $sql = "SELECT `id`, `productId`, `userId`, `createdAt`, `updatedAt` FROM `wishlist` WHERE 1";
+        $query = $this->db->query($sql);    
+        
+        if ($query->num_rows() > 0) {
+            
+            foreach($query->result() as $rowRes){
+                $product = $this->productListSingle($rowRes->productId);
+                $wishList[] = array(
+                    "id" => $rowRes->id,
+                    "productId" => $rowRes->productId,
+                    "userId"=>$rowRes->userId,
+                    "product"=>$product
+                    );
+            }
+            return $wishList;
+    
+        } else {
+            return 0;
+        }
+    }
+
+    public function wishListDelete($wishListData){
+        $this->db->where('id', $wishListData['id']);
+        $this->db->delete('wishlist');
+        return 1;
+    }
 }

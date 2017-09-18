@@ -273,7 +273,7 @@ $(document).ready(function () {
     
     $('.ui-ranger').each(function () {
         var slideDiv = $(this);
-        var rupee = String.fromCharCode('8377');
+        var rupee = String.fromCharCode('8377')+" ";
         $(this).slider({
             range: true,
             min: slideDiv.data('min'),

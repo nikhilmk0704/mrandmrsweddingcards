@@ -11,7 +11,7 @@
                             <div class="row">
                                 <div class="col-md-4 col-sm-6">
                                     <div class="widget about-widget">
-                                        <a class="footer-logo" href="home-1.html"><img src="images/template/color-1/logo-white.png" alt="Footer Logo"></a>
+                                        <a class="footer-logo" href="<?php echo base_url('home'); ?>"><img src="<?php echo base_url(); ?>images/template/color-1/logo-white.png" alt="Footer Logo"></a>
                                         <p class="about-txt">Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. Aenean dignissim</p>
                                         <div class="about-items">
                                             <div class="about-item">
@@ -276,6 +276,7 @@
         }
 
         function addToCart(productId,quantity){
+
             var loginStatus =  '<?php echo $this->session->userdata("userloggedin")?>';
             if(loginStatus=='1'){
                 $('#addToCart').modal('toggle');
@@ -284,6 +285,280 @@
                 $('#loginModal').modal('toggle');
             }
 
+        }
+
+        var shape = new Array();
+        var color = new Array();
+        var category = new Array();
+        var stock = new Array();
+        $(".shape,.color,.category,.stock,.range-data").change(function() {        
+            $(".loading").show(); 
+            if($(this).is(':checked')){
+                if($(this).attr('name') =='shape'){
+                    shape.push($(this).attr("id"));
+                }
+
+                if($(this).attr('name') =='color'){
+                    color.push($(this).attr("id"));
+                }
+
+                if($(this).attr('name') =='category'){
+                    category.push($(this).attr("id"));
+                }
+                if($(this).attr('name') =='stock'){
+                    stock.push($(this).attr("id"));
+                }
+            }else{
+                if($(this).attr('name') =='shape'){
+                    var index = shape.indexOf($(this).attr("id"));
+                    if (index > -1) {
+                        shape.splice(index, 1);
+                    }
+                }
+
+                if($(this).attr('name') =='color'){
+                    var index = color.indexOf($(this).attr("id"));
+                    if (index > -1) {
+                        color.splice(index, 1);
+                    }
+                }
+
+                if($(this).attr('name') =='category'){
+                    var index = category.indexOf($(this).attr("id"));
+                    if (index > -1) {
+                        category.splice(index, 1);
+                    }
+                }
+
+                if($(this).attr('name') =='stock'){
+                    var index = stock.indexOf($(this).attr("id"));
+                    if (index > -1) {
+                        stock.splice(index, 1);
+                    }
+                }
+            }
+            var min = $(".ui-ranger").slider("option", "values")[0];
+            var max = $(".ui-ranger").slider("option", "values")[1];
+
+            $.ajax({
+                url: "<?php echo site_url('filter_product');?>",
+                type: 'post',
+                dataType: 'html',
+                data: {
+                    shape: shape,
+                    color: color,
+                    category: category,
+                    stock: stock,
+                    min: min,
+                    max:max
+                },
+                success: function (data) {
+                    $("#product-wrap").empty();
+                    $("#product-wrap").html(data);
+                    $(".loading").hide(); 
+                }
+            });
+            
+        });
+
+        function filter(){
+            $(".loading").show(); 
+            var shape = new Array();
+            var color = new Array();
+            var category = new Array();
+            var stock = new Array();
+            var min = $(".ui-ranger").slider("option", "values")[0];
+            var max = $(".ui-ranger").slider("option", "values")[1];
+            $.ajax({
+                url: "<?php echo site_url('filter_product');?>",
+                type: 'post',
+                dataType: 'html',
+                data: {
+                    shape: shape,
+                    color: color,
+                    category: category,
+                    stock: stock,
+                    min: min,
+                    max:max
+                },
+                success: function (data) {
+                    $("#product-wrap").empty();
+                    $("#product-wrap").html(data);
+                    $(".loading").hide(); 
+                }
+            });
+        }
+
+        function writeReview(){
+            var loginStatus =  '<?php echo $this->session->userdata("userloggedin")?>';
+            if(loginStatus=='1'){
+                $('#reviewModal').modal('toggle');
+            }else{
+                $('#loginModal').modal('toggle');
+                
+            }
+
+        }
+
+
+        var $star_rating = $('.star-rating .fa');
+
+        var SetRatingStar = function() {
+          return $star_rating.each(function() {
+            if (parseInt($star_rating.siblings('input.rating-value').val()) >= parseInt($(this).data('rating'))) {
+              return $(this).removeClass('fa-star-o').addClass('fa-star');
+            } else {
+              return $(this).removeClass('fa-star').addClass('fa-star-o');
+            }
+          });
+        };
+
+        $star_rating.on('click', function() {
+          $star_rating.siblings('input.rating-value').val($(this).data('rating'));
+          return SetRatingStar();
+        });
+
+        $( "#ratingForm" ).validate( {
+            ignore: [],
+            rules: {
+                ratingValue:{
+                    min: 1,
+                    number: true,
+                    required: true
+                },
+                title: "required",
+                review:"required"
+            },
+            messages: {
+                ratingValue: {
+                    min: "Please select rating",
+                },
+                title: "Please enter title",
+                review: {
+                    required: "Please provide review",
+                }
+            },
+            errorElement: "em",
+            errorPlacement: function ( error, element ) {
+                if(element.attr("name")=='ratingValue'){
+                    error.insertAfter($(".star-rating"));
+                }
+                // Add the `help-block` class to the error element
+                error.addClass( "help-block" );
+
+                error.insertAfter( element );
+                
+            },
+            highlight: function ( element, errorClass, validClass ) {
+                $( element ).parents( ".col-sm-5" ).addClass( "has-error" ).removeClass( "has-success" );
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $( element ).parents( ".col-sm-5" ).addClass( "has-success" ).removeClass( "has-error" );
+            }
+        } );
+        
+        function saveReview(productId){
+            var loginStatus =  '<?php echo $this->session->userdata("userloggedin")?>';
+            if(loginStatus=='1'){
+                var userId = '<?php echo $this->session->userdata("id")?>'; 
+              
+                if ($( "#ratingForm" ).valid()) {
+                    $.ajax({
+                    url: "<?php echo site_url('save_review');?>",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        userId: userId,
+                        productId: productId,
+                        title:$("#title").val(),
+                        review:$("#review").val(),
+                        rating:$("#ratingValue").val()
+                    },
+                    success: function (data) {
+                       if(data=='1'||data==1){
+                            $.toast({
+                                heading: 'Success',
+                                text: 'Review saved successfully',
+                                position: 'top-right',
+                                stack: false
+                            })
+                            location.reload();
+                        }else if(data=='0'||data==0){
+                            $.toast({
+                                heading: 'Error',
+                                text: 'You have already done it!',
+                                position: 'top-right',
+                                stack: false
+                            })
+                            $('#reviewModal').modal('toggle');
+                            $('#reviewModal').on('hidden.bs.modal', function () {
+                                $(this).find('form').trigger('reset');
+                            })   
+                        }
+                    }
+                    });
+                }
+            }
+        }
+
+        function goToReview(){
+            location.href='#reviews_div';
+            $("#review_tab").click();
+        }
+
+        function addTowishList(productId){
+            var loginStatus =  '<?php echo $this->session->userdata("userloggedin")?>';
+            if(loginStatus=='1'){
+                var userId = '<?php echo $this->session->userdata("id");?>';
+                $.ajax({
+                    url: "<?php echo site_url('wishlist_save');?>",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        userId: userId,
+                        productId: productId
+                    },
+                    success: function (data) {
+                       if(data=='1'||data==1){
+                            location.reload();
+                        }else if(data=='0'||data==0){
+                            $.toast({
+                                heading: 'Error',
+                                text: 'You have already done it!',
+                                position: 'top-right',
+                                stack: false
+                            })   
+                        }
+                    }
+                });
+            }else{
+                $('#loginModal').modal('toggle');
+                
+            }
+        }
+
+
+        function removeWishList(id){
+            $.ajax({
+                    url: "<?php echo site_url('wishlist_delete');?>",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        id: id
+                    },
+                    success: function (data) {
+                       if(data=='1'||data==1){
+                            location.reload();
+                        }else if(data=='0'||data==0){
+                            $.toast({
+                                heading: 'Error',
+                                text: 'Something went wrong!',
+                                position: 'top-right',
+                                stack: false
+                            })   
+                        }
+                    }
+                });
         }
 
     </script>

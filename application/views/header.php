@@ -63,7 +63,7 @@
                         <div class="currency-selector top-selector">
                             <div class="currency-selected top-selected"><span><?php echo ucfirst($this->session->userdata('firstName') . " " . $this->session->userdata('lastName')); ?></span><i class="fa fa-angle-down"></i></div>
                             <ul id="currency-select" class="top-select currency-select">
-                                <li><a href="#">Wishlist</a></li>
+                                <li><a href="<?php echo base_url('wishlist'); ?>">Wishlist</a></li>
                                 <li><a href="#">Orders</a></li>
                                 <li><a href="<?php echo base_url('logout'); ?>">Logout</a></li>
                             </ul>
@@ -168,7 +168,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="<?php echo base_url('home'); ?>"><img src="images/template/color-1/logo.png" alt="Site Logo" height="100"></a>
+                    <a class="navbar-brand" href="<?php echo base_url('home'); ?>"><img src="<?php echo base_url(); ?>images/template/color-1/logo.png" alt="Site Logo" height="100"></a>
                 </div>
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="main-navigation">

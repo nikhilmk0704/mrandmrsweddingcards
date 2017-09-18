@@ -12,7 +12,7 @@
                                     <span class="level-3">up to</span>
                                     <span class="level-1">50% Off</span>
                                 </h1>
-                                <a class="btn" href="product.html">Shop Now !</a>
+                                <a class="btn" href="<?php echo base_url('products'); ?>">Shop Now !</a>
                             </div>
                         </div>
                     </div>
@@ -28,7 +28,7 @@
                                     <span class="level-3">up to</span>
                                     <span class="level-1">50% Off</span>
                                 </h1>
-                                <a class="btn" href="product.html">Shop Now !</a>
+                                <a class="btn" href="<?php echo base_url('products'); ?>">Shop Now !</a>
                             </div>
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                                     <span class="level-3">up to</span>
                                     <span class="level-1">50% Off</span>
                                 </h1>
-                                <a class="btn" href="product.html">Shop Now !</a>
+                                <a class="btn" href="<?php echo base_url('products'); ?>">Shop Now !</a>
                             </div>
                         </div>
                     </div>
@@ -96,7 +96,7 @@
                                         <!-- Thumb wrap -->
                                         <div class="thumb-wrap">
                                             <!-- Product Thumb -->
-                                            <a class="product-thumbs" href="#">
+                                            <a class="product-thumbs" href="<?php echo base_url('product-detail/'.$product["id"])?>">
                                                 <img class="default-thumb product-thumb" src="https://testbank-nc.s3.amazonaws.com/<?php echo $product['imagesArray'][0]['path']; ?>" alt="Product Image">
                                                 <img class="hover-thumb product-thumb" src="https://testbank-nc.s3.amazonaws.com/<?php echo $product['imagesArray'][1]['path'];?>" alt="Product Image">
                                             </a>
@@ -114,7 +114,7 @@
                                         <!-- Detail Wrap -->
                                         <div class="detail-wrap">
                                             <h5 class="product-name">
-                                                <a href="product-single.html"><?php echo $product['name']; ?></a>
+                                                <a href="<?php echo base_url('product-detail/'.$product["id"])?>"><?php echo $product['name']; ?></a>
                                             </h5>
                                             <?php if($product['discountPercentage'] > 0){ ?>
                                                 <?php

@@ -20,7 +20,7 @@
                                             <div class="filter-content">
                                                 <label for="amount" class="top-label price-label">Range: </label>
                                                 <input type="text" id="amount" class="range-data" readonly>
-                                                <div id="price_ranger" class="price-ranger ui-ranger" data-min="9" data-max="125"></div>
+                                                <div onclick="filter()" id="price_ranger" class="price-ranger ui-ranger" data-min="<?php echo $minMax['minimum']; ?>" data-max="<?php echo $minMax['maximum']; ?>"></div>
                                             </div>
                                         </div>
                              
@@ -34,9 +34,9 @@
                                                         <div class="input-col-2">
                                                             <div class="input-rule check">
                                                                 <span class="input-style"></span>
-                                                                <input id="<?php echo ucfirst($productShape['id']); ?>" type="checkbox" name="category" value="beds">
+                                                                <input class="shape" id="<?php echo ucfirst($productShape['id']); ?>" type="checkbox" name="shape">
                                                             </div>
-                                                            <label class="filter-label" for="beds"><?php echo ucfirst($productShape['shapeName']); ?> <span class="numofitems">(<?php echo $productShape['count']; ?>)</span></label>
+                                                            <label class="filter-label"><?php echo ucfirst($productShape['shapeName']); ?> <span class="numofitems">(<?php echo $productShape['count']; ?>)</span></label>
                                                         </div>
                                                         <?php } ?> 
                                                     <?php } ?>
@@ -53,7 +53,15 @@
                                                 <?php if(count($productColor) > 0){ ?>
                                                     <?php foreach ($productColor as $productColor) { ?>
                                                         <div class="input-col-2">
-                                                            <input id="beige_color" type="button" name="color" value="1" style="background-color: <?php echo $productColor['colorCode']; ?>"><label class="filter-label" for="beige_color"><?php echo ucfirst($productColor['colorName']); ?> <span class="numofitems">(<?php echo $productColor['count']; ?>)</span></label>
+
+                                                            <div class="input-rule check">
+                                                                <span class="input-style"></span>
+                                                                <input class="color" id="<?php echo $productColor['id']; ?>" type="checkbox" name="color" class="color">
+                                                            </div>
+                                                            <label class="filter-label" style="color: <?php echo $productColor['colorCode']; ?> !important"><?php echo ucfirst($productColor['colorName']); ?> <span class="numofitems">(<?php echo $productColor['count']; ?>)</span>
+                                                            </label>
+
+                                                            
                                                         </div>
                                                     <?php } ?>    
                                                 <?php } ?>    
@@ -63,7 +71,7 @@
 
                                         <!-- Category filter -->
                                         <div class="layered-filter">
-                                            <h4 class="filter-title">Shape</h4>
+                                            <h4 class="filter-title">Category</h4>
                                             <div class="filter-content">
                                                 <div class="input-row">
                                                     <?php if(count($productCategory) > 0){ ?>
@@ -71,7 +79,7 @@
                                                         <div class="input-col-2">
                                                             <div class="input-rule check">
                                                                 <span class="input-style"></span>
-                                                                <input id="<?php echo ucfirst($productCategory['id']); ?>" type="checkbox" name="category" value="beds">
+                                                                <input class="category" id="<?php echo ucfirst($productCategory['id']); ?>" type="checkbox" name="category">
                                                             </div>
                                                             <label class="filter-label" for="beds"><?php echo ucfirst($productCategory['categoryName']); ?> <span class="numofitems">(<?php echo $productCategory['count']; ?>)</span></label>
                                                         </div>
@@ -90,7 +98,7 @@
                                                     <div class="input-col-1">
                                                         <div class="input-rule check">
                                                             <span class="input-style"></span>
-                                                            <input id="stock" type="checkbox" name="availability" value="stock">
+                                                            <input id="stock" class="stock" type="checkbox" name="stock" value="stock">
                                                         </div>
                                                         <label class="filter-label" for="stock">In Stock <span class="numofitems">(<?php echo $inStockCount; ?>)</span></label>
                                                     </div>
@@ -166,83 +174,7 @@
                             </div>
                             
                             <div id="product-wrap" class="grid_mode">
-                                <div class="row">
-                                <?php if(count($products) > 0){ ?>
-                                    <?php foreach ($products as $product) { ?>
-                                       <div class="product col-lg-4 col-md-6">
-                                            <!-- Thumb wrap -->
-                                            <div class="thumb-wrap">
-                                                <!-- Product Thumb -->
-                                                <a class="product-thumbs" href="#">
-                                                    <img class="default-thumb product-thumb" src="https://testbank-nc.s3.amazonaws.com/<?php echo $product['imagesArray'][0]['path']; ?>" alt="Product Image">
-                                                    <img class="hover-thumb product-thumb" src="https://testbank-nc.s3.amazonaws.com/<?php echo $product['imagesArray'][1]['path'];?>" alt="Product Image">
-                                                </a>
-                                                <!-- Product Attribute -->
-                                                <div class="attr-group">
-                                                    <?php if($product['status']=='0'){ ?>
-                                                        <span class="out-stock"><span>No Stock</span></span>
-                                                    <?php }elseif($product['status']=='1'){ ?>    
-                                                        <span class="new"><span>New</span></span>
-                                                    <?php }elseif($product['status']=='2'){ ?>    
-                                                        <span class="sale"><span>Sale</span></span>
-                                                    <?php } ?>
-                                                </div>
-                                            </div>
-                                            <!-- Detail Wrap -->
-                                            <div class="detail-wrap">
-                                                <h5 class="product-name"><a href="#"><?php echo $product['name']; ?></a></h5>
-                                                <?php if($product['discountPercentage'] > 0){ ?>
-                                                <?php
-                                                    $price =  $product['price'];
-                                                    $discount = $product['discountPercentage'];
-                                                    $discountAmount = $price * ($discount/100);
-                                                ?>
-                                                 <p class="price">&#8377; <?php echo $product['price'] - $discountAmount; ?> <span class="regular-price">&#8377; <?php echo $product['price']; ?></span></p>
-                                                   
-                                                <?php }else{ ?>
-                                                   <p class="price"> &#8377; <?php echo $product['price']; ?></p> 
-                                                <?php } ?>
-                                                <div class="star-ratings">
-                                                    <?php
-                                                        $totalRating = 0;  
-                                                        $averageRating = 0;
-                                                        $noOfRating = count($product['ratingArray']);
-                                                    ?>
-                                                    <?php if(count($product['ratingArray']) > 0){ ?>
-                                                        <?php foreach ($product['ratingArray'] as $rate){?> 
-                                                            <?php 
-                                                                $totalRating += $rate['rating']; 
-                                                            ?>
-                                                        
-                                                        <?php } ?>
-                                                        <?php $averageRating = ceil($totalRating/$noOfRating); ?>
-                                                    <?php }?>  
-                                                    
-                                                    <?php for($i=1; $i<=5; $i++){ ?>
-                                                        <?php if( $i <= $averageRating){?>
-                                                            <span class="star star-on"></span>
-                                                        <?php }else{?>
-                                                            <span class="star"></span>
-                                                        <?php } ?>    
-                                                    <?php } ?>
-                                                </div>
-                                                <p class="product-description">
-                                                    <?php echo $product['description']; ?>
-                                                </p>
-                                                <a class="product-more" href="#">Learn More...</a>
-                                                <div class="button-container">
-                                                    <div class="tab_button">
-                                                        <a class="shop-btn shop-cart-btn" href="#"><i class="fa fa-shopping-bag"></i>Add to cart</a>
-                                                        <a class="shop-btn shop-wishlist-btn" href="#"><i class="fa fa-heart"></i></a>
-                                                        <a class="shop-btn shop-compare-btn" href="#"><i class="fa fa-retweet"></i></a>
-                                                        <a class="shop-btn shop-view-btn" href="#"><i class="fa fa-eye"></i></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php } ?>
-                                <?php } ?>          
-                                </div>
+                                <?php $this->load->view('product_list'); ?>
                             </div>
                             
                             <!-- Product Down Toolbar -->
@@ -296,6 +228,14 @@
                                             <a href="#">2</a>
                                             <a href="#">3</a>
                                             <a href="#">4</a>
+                                            <a href="#">5</a>
+                                            <a href="#">5</a>
+                                            <a href="#">5</a>
+                                            <a href="#">5</a>
+                                            <a href="#">5</a>
+                                            <a href="#">5</a>
+                                            <a href="#">5</a>
+                                            <a href="#">5</a>
                                             <a href="#">5</a>
                                         </div>
                                     </div>
